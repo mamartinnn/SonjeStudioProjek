@@ -7,18 +7,20 @@ use Illuminate\Support\ServiceProvider;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
+     * Mendaftarkan layanan ke dalam container aplikasi.
+     * Digunakan untuk binding atau registrasi dependency.
      */
     public function register(): void
     {   
-        //
+        // Belum ada layanan khusus yang didaftarkan
     }
 
     /**
-     * Bootstrap services.
+     * Men-setup atau menjalankan proses saat service provider di-boot.
+     * Biasanya digunakan untuk mendefinisikan route, parameter binding, dsb.
      */
     public function boot(): void
     {
-        //
+        // Belum ada bootstrapping untuk routing
     }
 }

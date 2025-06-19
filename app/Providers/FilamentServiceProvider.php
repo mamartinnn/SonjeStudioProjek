@@ -9,18 +9,20 @@ use App\Http\Responses\LogoutResponse;
 class FilamentServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
+     * Mendaftarkan binding layanan ke container aplikasi.
      */
     public function register(): void
     {
-         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
+        // Mengganti implementasi default LogoutResponse dari Filament
+        // dengan custom LogoutResponse milik kita
+        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     /**
-     * Bootstrap services.
+     * Menjalankan proses saat service provider di-boot.
      */
     public function boot(): void
     {
-        //
+        // Tidak ada proses bootstrap tambahan
     }
 }

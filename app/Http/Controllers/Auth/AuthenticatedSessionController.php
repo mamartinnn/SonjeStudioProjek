@@ -12,20 +12,26 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Menampilkan halaman login.
      */
     public function create(): View
     {
         return view('auth.login');
     }
 
+    /**
+     * Menampilkan halaman home (opsional jika user berhasil login).
+     */
     public function createuser(): View
     {
         return view('home');
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Menangani permintaan autentikasi login.
+     * - Melakukan validasi melalui LoginRequest
+     * - Login user
+     * - Regenerasi session untuk keamanan
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -33,11 +39,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Arahkan ke halaman yang dimaksud setelah login, default ke route 'home'
         return redirect()->intended(route('home', absolute: false));
     }
 
     /**
-     * Destroy an authenticated session.
+     * Logout user dan hancurkan sesi.
+     * - Keluar dari Auth
+     * - Invalidate session
+     * - Regenerasi CSRF token
      */
     public function destroy(Request $request): RedirectResponse
     {

@@ -11,44 +11,48 @@ use Illuminate\Support\Facades\Auth;
 class BookmarkReviewController extends Controller
 {
     /**
-     * Store a new bookmark.
+     * Menyimpan produk sebagai bookmark untuk user yang sedang login.
      */
     public function storeBookmark(Product $product)
     {
         $user = Auth::user();
 
-        // Prevent duplicate bookmarks
+        // Cegah duplikasi bookmark jika sudah pernah di-bookmark
         if ($user->bookmarkedProducts()->where('product_id', $product->id)->exists()) {
             return back()->with('info', 'Product already bookmarked.');
         }
 
+        // Simpan relasi bookmark ke tabel pivot
         $user->bookmarkedProducts()->attach($product->id);
 
         return back()->with('success', 'Product bookmarked successfully.');
     }
 
     /**
-     * Remove a bookmark.
+     * Menghapus bookmark produk untuk user yang sedang login.
      */
     public function destroyBookmark(Product $product)
     {
         $user = Auth::user();
 
+        // Hapus relasi bookmark dari tabel pivot
         $user->bookmarkedProducts()->detach($product->id);
 
         return back()->with('success', 'Bookmark removed successfully.');
     }
 
     /**
-     * Store a product review.
+     * Menyimpan review produk dari user.
      */
     public function storeReview(Request $request, Product $product)
     {
+        // Validasi input review
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
 
+        // Simpan review ke database dengan relasi ke produk dan user
         $product->reviews()->create([
             'user_id' => Auth::id(),
             'rating' => $request->rating,
@@ -58,11 +62,18 @@ class BookmarkReviewController extends Controller
         return back()->with('success', 'Review submitted successfully.');
     }
 
-        public function index()
+    /**
+     * Menampilkan halaman bookmark user yang sedang login.
+     */
+    public function index()
     {
-        $bookmarkedProducts = Auth::user()->bookmarkedProducts()->with('categories')->get();
+        // Ambil semua produk yang sudah di-bookmark oleh user beserta kategorinya
+        $bookmarkedProducts = Auth::user()
+            ->bookmarkedProducts()
+            ->with('categories')
+            ->get();
 
+        // Tampilkan view dengan data bookmark
         return view('layouts.account.bookmarks', compact('bookmarkedProducts'));
     }
-
 }

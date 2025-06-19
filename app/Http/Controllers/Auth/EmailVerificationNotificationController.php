@@ -9,16 +9,19 @@ use Illuminate\Http\Request;
 class EmailVerificationNotificationController extends Controller
 {
     /**
-     * Send a new email verification notification.
+     * Mengirim ulang email verifikasi ke pengguna.
      */
     public function store(Request $request): RedirectResponse
     {
+        // Jika email pengguna sudah terverifikasi, arahkan ke dashboard
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false));
         }
 
+        // Jika belum, kirim ulang email verifikasi
         $request->user()->sendEmailVerificationNotification();
 
+        // Kembali ke halaman sebelumnya dengan status notifikasi berhasil dikirim
         return back()->with('status', 'verification-link-sent');
     }
 }
