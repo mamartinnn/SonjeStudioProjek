@@ -19,8 +19,11 @@ class ProductSearchController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
+    $query->whereHas('categories', function ($q) use ($request) {
+        $q->where('categories.id', $request->category);
+    });
+}
+
 
         // Filter by price range
         if ($request->filled('min_price')) {
