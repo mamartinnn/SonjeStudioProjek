@@ -9,11 +9,13 @@ use App\Models\User;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any authentication / authorization services.
+     * Mendaftarkan layanan autentikasi dan otorisasi.
      */
     public function boot(): void
     {
+        // Mendefinisikan gate 'access-admin-panel' untuk membatasi akses ke panel admin
         Gate::define('access-admin-panel', function (User $user) {
+            // Hanya izinkan jika user adalah admin
             return $user->is_admin; 
         });
     }
