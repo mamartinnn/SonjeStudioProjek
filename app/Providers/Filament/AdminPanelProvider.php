@@ -23,25 +23,34 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
+            ->default() // Menandai panel ini sebagai panel default
+            ->id('admin') // ID unik untuk panel admin
+            ->path('admin') // Path URL untuk mengakses panel admin
+            ->login() // Menggunakan halaman login bawaan Filament
             
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Amber, // Warna utama tema panel
             ])
 
+            // Otomatis mendeteksi resource dari folder dan namespace yang ditentukan
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+
+            // Otomatis mendeteksi halaman dari folder dan namespace yang ditentukan
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+
             ->pages([
-                Pages\Dashboard::class,
+                Pages\Dashboard::class, // Halaman dashboard utama
             ])
+
+            // Otomatis mendeteksi widget dari folder dan namespace yang ditentukan
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                Widgets\AccountWidget::class,       // Widget akun pengguna
+                Widgets\FilamentInfoWidget::class,  // Widget info sistem Filament
             ])
+
+            // Middleware yang dijalankan untuk setiap request ke panel
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -52,11 +61,12 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                'can:access-admin-panel'    
+                'can:access-admin-panel' // Middleware untuk membatasi akses hanya user tertentu
             ])
+
+            // Middleware autentikasi untuk panel
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            
     }
 }
