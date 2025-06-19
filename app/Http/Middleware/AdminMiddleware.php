@@ -9,18 +9,23 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminMiddleware
 {
     /**
-     * Handle an incoming request.
+     * Menangani request masuk dan memeriksa apakah user adalah admin.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return \Symfony\Component\HttpFoundation\Response
      */
+
     // app/Http/Middleware/AdminMiddleware.php
+    public function handle($request, Closure $next)
+    {
+        // Cek apakah user sudah login dan memiliki peran admin
+        if (! auth()->check() || ! auth()->user()->isAdmin()) {
+            // Jika bukan admin, tampilkan error 403 (Forbidden)
+            abort(403, 'Forbidden');
+        }
 
-public function handle($request, Closure $next)
-{
-    if (! auth()->check() || ! auth()->user()->isAdmin()) {
-        abort(403, 'Forbidden');
+        // Lanjutkan ke request berikutnya jika user adalah admin
+        return $next($request);
     }
-    return $next($request);
-}
-
 }
